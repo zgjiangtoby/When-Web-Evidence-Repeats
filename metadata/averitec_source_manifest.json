@@ -1,0 +1,42 @@
+{
+  "dataset": "AVeriTeC",
+  "official_source": "https://fever.ai/dataset/averitec.html",
+  "repository": "https://huggingface.co/chenxwh/AVeriTeC",
+  "revision": "37a96094b68f6c7977734a0d35c7c02a1b1eef07",
+  "license": "cc-by-nc-4.0 (README.md metadata; no standalone LICENSE at this revision)",
+  "files": {
+    "averitec_train.json": {
+      "url": "https://huggingface.co/chenxwh/AVeriTeC/resolve/37a96094b68f6c7977734a0d35c7c02a1b1eef07/data/train.json",
+      "bytes": 10184813,
+      "sha256": "ae5eda7c42ddf1695ef185a7ba1bc716928f5adf57103e4f78aae5f9afe00f9c",
+      "records": 3068,
+      "labels": {"Refuted": 1742, "Supported": 849, "Not Enough Evidence": 282, "Conflicting Evidence/Cherrypicking": 195},
+      "duplicate_exact_claim_extra_rows": 69,
+      "questions": 7985,
+      "answers": 8479
+    },
+    "averitec_dev.json": {
+      "url": "https://huggingface.co/chenxwh/AVeriTeC/resolve/37a96094b68f6c7977734a0d35c7c02a1b1eef07/data/dev.json",
+      "bytes": 1785475,
+      "sha256": "499793726b4a5406780928a3d9dedc48d6dd53de778f22437d129cacdb08e300",
+      "records": 500,
+      "labels": {"Refuted": 305, "Supported": 122, "Not Enough Evidence": 35, "Conflicting Evidence/Cherrypicking": 38},
+      "duplicate_exact_claim_extra_rows": 9,
+      "questions": 1287,
+      "answers": 1399
+    },
+    "README.md": {
+      "url": "https://huggingface.co/chenxwh/AVeriTeC/resolve/37a96094b68f6c7977734a0d35c7c02a1b1eef07/README.md",
+      "bytes": 9860,
+      "sha256": "bfad4a061b2fced4ff79e7293b9651e4654c82bc56ed0ce225df2f4cbd72ede1"
+    }
+  },
+  "cross_split_duplicate_exact_claim_unique": 4,
+  "schema": {
+    "claim_fields": ["cached_original_claim_url", "claim", "claim_date", "claim_types", "fact_checking_article", "fact_checking_strategies", "justification", "label", "location_ISO_code", "original_claim_url", "questions", "reporting_source", "required_reannotation", "speaker"],
+    "question_fields": ["answers", "question"],
+    "answer_fields": ["answer", "answer_type", "boolean_explanation", "cached_source_url", "source_medium", "source_url"]
+  },
+  "new_human_annotations": 0,
+  "raw_text_in_manifest": false
+}

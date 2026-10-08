@@ -1,0 +1,42 @@
+{
+  "frozen_files_sha256": {
+    "metadata/averitec_source_manifest.json": "0ae4d2bdef699499e0503553a2e41fb400b69c14161cf5802c11ce4f8d25afa1",
+    "paper2/DECODER_CONTROL_PLAN_20261002.md": "b6d291e5040b09df1c7654aea508b31d94cdfa930097b773178c26cbe155a437",
+    "paper2/FORMAL_PROTOCOL_V1.md": "de7c414c746c30cf220ce22ca5b7a5693a5ca7115a33a57c66e6fb751e17a0dd",
+    "paper2/SUPPLEMENT_DESIGN_CANDIDATE_20260930.md": "9caa2d01cd4746f0b5c8738a54a2af194d403cc8e46f739162eef1fdbedd0217",
+    "paper2/SUPPLEMENT_PROTOCOL_V1.md": "194d70542b35a680637e189e756c246d5daca4c03fea4d78f5ba33d49480ac0d",
+    "paper2/decoder_control.py": "8ae0349c7d30925bfa9e2001b4125ca394f4116d7a7b7067d04140843bdd9ad7",
+    "paper2/evaluate.py": "dd6fb33f2e636d63f4b12b06adbd1cc69ecfb3815728e20adc0eab7d81ccd518",
+    "paper2/formal.py": "eb88f14e7b562e055ef6aafd3aa6b9d15415f13b6424880d6e007ce799600b46",
+    "paper2/prepare.py": "6bbb9d0fc795613d3ae90ac88c1533284832b4eb21d17f7ca854ffd55fd0df9c",
+    "paper2/replay.py": "c9f52d3434a9fb4d5f59ff3f51778a7123330f57ea44c9480661d032e40e5cab",
+    "paper2/shadow_policy_sensitivity.py": "6ee51d036320f8f1b4c56809dc9dacd67273ccfeb9131e03cd3480ca5558b43c",
+    "paper2/supplement.py": "71934a0a12bcec4d7dba113df653ea784cd7b072462affb1be7818b6e8074467",
+    "paper2/test_decoder_control.py": "e04d5422beca12747e87bb19fe82e1c6d6cbcff88f670e93cc3cc321090a8606",
+    "paper2/test_formal.py": "6abd10defa6c9a159625a780d86c299f6ec309411f7312aafa1579c2f9a670eb",
+    "paper2/test_supplement.py": "97f2068f865d88a5f4a1fef5cc21a334eb3795502821158a49228716c75beb3f",
+    "shared/generate.py": "f81bc57760070dbef65aaf60fa71ce3c70aa71f345224b7a4932e493f170ef6c",
+    "shared/generate_closed_labels.py": "138b1bea0a0bc801f92df56c5e48be8856a2ae2330dc2e5c9694172dfe2512c4"
+  },
+  "included_dataset_records": 0,
+  "included_predictions_or_weights": 0,
+  "manuscript_version": "Revised_20261003",
+  "metadata_only_files": [
+    "metadata/averitec_source_manifest.json"
+  ],
+  "paired_overleaf_archive": "WWW_EXTRA_P2_EVIDENCE_Revised_20261003_Overleaf.zip",
+  "paired_overleaf_sha256": "7db343debfc9051e08626cae3b9618ada4fe91c2e90b8f8b75d602b4997a50fe",
+  "project_license_added": false,
+  "release_additions": [
+    "README.md",
+    "DATA_INTERFACE.md",
+    ".gitignore",
+    "requirements-recorded.txt",
+    "tools/run_with_receipt.py",
+    "tests/test_run_with_receipt.py"
+  ],
+  "scientific_source_changes": [],
+  "source_release_date": "2026-10-08",
+  "title": "When Web Evidence Repeats: Decision Stability in Claim Verification",
+  "validation_scope": "Offline synthetic tests and source/archive checks only; no full empirical rerun."
+}
