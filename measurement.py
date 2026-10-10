@@ -9,13 +9,13 @@ import json
 import math
 from pathlib import Path
 
-import evaluate as ev
-import prepare as pr
+import metrics as ev
+import evidence as pr
 from generate import load_local_tokenizer, load_predictions, sha
 from replay import extract_units
 
 HERE = Path(__file__).resolve().parent
-ROOT = HERE.parent
+ROOT = HERE
 VERSION = "averitec_measurement_v1"
 DEV_SHA = "499793726b4a5406780928a3d9dedc48d6dd53de778f22437d129cacdb08e300"
 RUNNER_SHA = "f81bc57760070dbef65aaf60fa71ce3c70aa71f345224b7a4932e493f170ef6c"
@@ -52,12 +52,10 @@ def write_rows(path, rows):
 
 
 def bindings():
-    files = [HERE / n for n in ("formal.py", "test_formal.py", "FORMAL_PROTOCOL_V1.md",
-                                "prepare.py", "replay.py", "evaluate.py")]
-    files.append(ROOT / "shared" / "generate.py")
-    result = {str(p.relative_to(ROOT)): file_sha(p) for p in files}
-    if result["shared/generate.py"] != RUNNER_SHA:
-        raise ValueError("Frozen generator changed")
+    names = ("measurement.py", "evidence.py", "replay.py", "metrics.py", "generate.py")
+    result = {name: file_sha(ROOT / name) for name in names}
+    if result["generate.py"] != RUNNER_SHA:
+        raise ValueError("Native generator changed")
     return result
 
 
@@ -208,7 +206,7 @@ def prepare(args):
     for name, rows in zip(names, artifacts):
         write_rows(args.output / name, rows)
     requests, _, padding, audit, lengths = artifacts
-    manifest = {"version": VERSION, "source": source, "model": model, "code_protocol_test_binding": bindings(),
+    manifest = {"version": VERSION, "source": source, "model": model, "source_binding": bindings(),
                 "files": {n: file_sha(args.output / n) for n in names}, "native_records": len(records),
                 "exact_claim_groups": len({r["exact_claim_group"] for r in audit}),
                 "partial_inapplicable_ids": [r["claim_id"] for r in audit if not r["partial_applicable"]],
@@ -217,7 +215,7 @@ def prepare(args):
                 "unique_messages_per_realization": len({sha(r["messages"]) for r in requests}),
                 "padding_controls": len(padding), "padding_exact_matches": sum(r["exact_length_match"] for r in padding),
                 "overlength_logical_requests": sum(r["over_input_ceiling"] for r in lengths),
-                "new_human_annotations": 0, "natural_lineage_labels": False, "actual_design_route": "GPT-6-Astra/xhigh"}
+                "new_human_annotations": 0, "natural_lineage_labels": False}
     write_json(args.output / "preparation.json", manifest)
     print(json.dumps({k: manifest[k] for k in ("native_records", "exact_claim_groups", "logical_requests_per_realization",
                                                "unique_messages_per_realization", "padding_controls", "padding_exact_matches",
@@ -226,8 +224,8 @@ def prepare(args):
 
 def load_prepared(path):
     manifest = json.loads((path / "preparation.json").read_text())
-    if manifest.get("version") != VERSION or manifest["code_protocol_test_binding"] != bindings():
-        raise ValueError("Frozen source/protocol/test binding changed")
+    if manifest.get("version") != VERSION or manifest["source_binding"] != bindings():
+        raise ValueError("Source binding changed")
     records, source = native_source(Path(manifest["source"]["path"]))
     model = model_binding(manifest["model"]["key"])
     if source != manifest["source"] or model != manifest["model"]:
@@ -432,7 +430,7 @@ def evaluate(args):
     report.update(version=VERSION, model_key=manifest["model"]["key"], native_records=manifest["native_records"],
                   exact_claim_groups=manifest["exact_claim_groups"], evidence_type="native_four_way_provided_evidence_measurement",
                   preparation_sha256=file_sha(args.prepared / "preparation.json"),
-                  source=manifest["source"], source_binding=manifest["code_protocol_test_binding"],
+                  source=manifest["source"], source_binding=manifest["source_binding"],
                   generation_manifests={"A": ma, "B": mb},
                   prediction_files=[{"path": str(p.resolve()), "sha256": file_sha(p),
                                      "manifest_sha256": file_sha(p.with_suffix(p.suffix + ".manifest.json"))}

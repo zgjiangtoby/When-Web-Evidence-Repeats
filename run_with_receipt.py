@@ -14,7 +14,7 @@ from pathlib import Path
 import subprocess
 import sys
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parent
 
 
 def digest(path):
@@ -35,9 +35,8 @@ def exists(path):
 def command(args):
     # Import only local task definitions; model/data loading is deferred to the
     # explicitly executed, unchanged generator and subsequent frozen evaluator.
-    sys.path[:0] = [str(ROOT / "paper2"), str(ROOT / "shared")]
-    import formal
-    import supplement
+    import measurement as formal
+    import allocation as supplement
     import decoder_control
     interpreter = Path(sys.executable).resolve()
     if sys.prefix != sys.base_prefix and not interpreter.is_relative_to(Path(sys.prefix).resolve()):
@@ -60,7 +59,7 @@ def command(args):
         raise ValueError("Prepared requests are missing")
     suffix = supplement.expected_argv(prepared, args.output.resolve(), model)
     if args.decoder == "closed":
-        suffix[0] = str(ROOT / "shared" / "generate_closed_labels.py")
+        suffix[0] = str(ROOT / "generate_closed_labels.py")
     return [str(interpreter)] + suffix
 
 

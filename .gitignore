@@ -1,10 +1,9 @@
-# External inputs and generated artifacts; this repository contains source only.
 /models/
-/paper2/data/
-/paper2/prepared/
-/paper2/runs/
-/paper2/results/
+/data/*
+!/data/source_manifest.json
+/prepared/
+/runs/
+/results/
 __pycache__/
 *.py[cod]
-.pytest_cache/
 .venv/

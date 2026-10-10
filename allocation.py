@@ -9,26 +9,19 @@ import json
 from pathlib import Path
 import sys
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-import formal as fm
-import prepare as pr
+import measurement as fm
+import evidence as pr
 import regex
 from generate import sha, load_local_tokenizer
 from replay import extract_units
 
 HERE, ROOT = fm.HERE, fm.ROOT
 VERSION = "repetition_allocation_supplement_v1"
-CANDIDATE_SHA = "9caa2d01cd4746f0b5c8738a54a2af194d403cc8e46f739162eef1fdbedd0217"
 SCI_FILES = {
     "data.tar.gz": "11c621288d41ac144d29b13b0f8503b3820b7d6e8b1f6ff24dff335c196d76be",
     "corpus.jsonl": "b8d6c89624cb2ed74dee8938effc4f5d8bd2086887880af8110d64be4ceade62",
     "claims_dev.jsonl": "86f0435d08fdb65d1aa41d1472684f57e6e71930626497bdf4d7a9ec1a632217",
     "claims_train.jsonl": "f4c8fa82d8bd0653a9cc8d61a6ea48c25eacea64e90af5dbf390ebb1b74372f0",
-}
-FROZEN_FORMAL = {
-    "paper2/formal.py": "eb88f14e7b562e055ef6aafd3aa6b9d15415f13b6424880d6e007ce799600b46",
-    "paper2/test_formal.py": "6abd10defa6c9a159625a780d86c299f6ec309411f7312aafa1579c2f9a670eb",
-    "paper2/FORMAL_PROTOCOL_V1.md": "de7c414c746c30cf220ce22ca5b7a5693a5ca7115a33a57c66e6fb751e17a0dd",
 }
 SCI_LABELS = ("SUPPORT", "CONTRADICT", "NOINFO")
 SCI_SYSTEM = ("Decide whether the scientific claim is supported, contradicted, or not established by the provided abstract. "
@@ -55,13 +48,7 @@ WEIGHTS = {
 
 def bindings():
     result = fm.bindings()
-    for name, expected in FROZEN_FORMAL.items():
-        if result[name] != expected:
-            raise ValueError("Immutable formal dependency changed: " + name)
-    for name in ("supplement.py", "test_supplement.py", "SUPPLEMENT_PROTOCOL_V1.md", "SUPPLEMENT_DESIGN_CANDIDATE_20260930.md"):
-        result["paper2/" + name] = fm.file_sha(HERE / name)
-    if result["paper2/SUPPLEMENT_DESIGN_CANDIDATE_20260930.md"] != CANDIDATE_SHA:
-        raise ValueError("Adopted candidate changed")
+    result["allocation.py"] = fm.file_sha(HERE / "allocation.py")
     return result
 
 
@@ -356,7 +343,7 @@ def prepare(args):
 def load_prepared(path):
     manifest = json.loads((path / "preparation.json").read_text())
     if manifest.get("version") != VERSION or manifest.get("status") != "PREPARED_NOT_RUN" or manifest["binding"] != bindings():
-        raise ValueError("Nonrunnable preparation or changed source/protocol/test binding")
+        raise ValueError("Nonrunnable preparation or changed source binding")
     obs, sources = native_observations()
     model = model_binding(manifest["model"]["key"])
     if sources != manifest["sources"] or model != manifest["model"]:
@@ -545,7 +532,7 @@ def checked_repeats(prepared, paths):
 
 
 def expected_argv(prepared, output, model):
-    return [str(ROOT / "shared" / "generate.py"), "--input", str((prepared / "requests.jsonl").resolve()),
+    return [str(ROOT / "generate.py"), "--input", str((prepared / "requests.jsonl").resolve()),
             "--output", str(output.resolve()), "--model", model["path"], "--model-revision", model["revision"],
             "--batch-size", "8", "--max-input-tokens", "8192", "--max-new-tokens", "16",
             "--num-shards", "1", "--shard-index", "0", "--seed", "17"]

@@ -8,7 +8,7 @@ import math
 from pathlib import Path
 import sys
 
-import supplement as sp
+import allocation as sp
 from generate import load_predictions, read_requests, sha
 import generate_closed_labels as closed
 
@@ -22,9 +22,8 @@ FROZEN_PYTHON = str(Path(sys.executable).resolve())
 
 def bindings():
     result = sp.bindings()
-    for relative in ("shared/generate_closed_labels.py", "paper2/decoder_control.py",
-                     "paper2/test_decoder_control.py", "paper2/DECODER_CONTROL_PLAN_20261002.md"):
-        result[relative] = fm.file_sha(ROOT / relative)
+    for name in ("generate_closed_labels.py", "decoder_control.py"):
+        result[name] = fm.file_sha(ROOT / name)
     return result
 
 
@@ -92,8 +91,7 @@ def prepare(args):
                 "unique_messages": len({sha(r["messages"]) for r in augmented}), "population": POPULATION,
                 "decision_contract": contract, "metadata_fields": ["corpus", "condition", "allowed_labels"],
                 "messages_equal_in_original_order": all(a["messages"] == b["messages"] for a, b in zip(requests, augmented)),
-                "new_human_annotations": 0, "prospective_after_prior_results_seen": True,
-                "design_route": "gpt-6-astra/xhigh", "execution_route": "gpt-6-sol/medium"}
+                "new_human_annotations": 0, "prospective_after_prior_results_seen": True}
     fm.write_json(args.output / "preparation.json", manifest)
     print(json.dumps({"status": manifest["status"], "requests": len(augmented), "decision_contract": contract}))
 
@@ -120,7 +118,7 @@ def load_prepared(directory):
 def checked_closed_run(path, request_file, requests, lengths, preparation):
     predictions, config, manifests = load_predictions([path], request_file)
     manifest, model = manifests[0], preparation["model"]
-    required = {"code_sha256": fm.file_sha(ROOT / "shared/generate_closed_labels.py"),
+    required = {"code_sha256": fm.file_sha(ROOT / "generate_closed_labels.py"),
                 "native_runner_sha256": fm.RUNNER_SHA, "model_path": model["path"], "model_revision": model["revision"],
                 "model_config_sha256": model["files"]["config.json"], "versions": model["versions"],
                 "batch_size": 8, "max_input_tokens": 8192, "max_new_tokens": 16, "num_shards": 1, "seed": 17,
@@ -208,7 +206,7 @@ def checked_model(prepared, paths):
 
 
 def group_interval(pairs, family=1, replicates=BOOTSTRAP):
-    """Same record-weighted component bootstrap as frozen formal.py, with this plan's seed."""
+    """Same record-weighted component bootstrap as frozen measurement.py, with this plan's seed."""
     import numpy as np
     groups = defaultdict(list)
     for group, value in pairs:
@@ -364,7 +362,7 @@ def summarize(refs, padding, runs, replicates=BOOTSTRAP):
 def expected_argv(prepared, output, model, decoder):
     result = sp.expected_argv(prepared, output, model)
     if decoder == "closed":
-        result[0] = str(ROOT / "shared/generate_closed_labels.py")
+        result[0] = str(ROOT / "generate_closed_labels.py")
     return result
 
 

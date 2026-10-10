@@ -11,7 +11,7 @@ import math
 from pathlib import Path
 
 from decoder_control import contrast_records, group_interval
-from supplement import ARMS, SCI_LABELS, pr
+from allocation import ARMS, SCI_LABELS, pr
 
 
 def choose(candidates, field):
@@ -47,7 +47,7 @@ def exact_name_alias(response, corpus):
 
 
 def analyze(root):
-    folder = root / "paper2/results/decoder_control_20261002_v2_evaluation"
+    folder = root / "results/decoder_control_20261002_v2_evaluation"
     summary_path = folder / "summary.json"
     summary = json.loads(summary_path.read_text())
     hashes = {str(summary_path.relative_to(root)): sha256(summary_path.read_bytes()).hexdigest()}
@@ -77,7 +77,7 @@ def analyze(root):
                     raise ValueError("Frozen evaluated outcomes changed")
                 official[decoder, realization] = indexed(rows)
                 suffix = "_retry1" if model == "granite" and decoder == "closed" else ""
-                raw_path = root / f"paper2/runs/{model}_decoder_control_20261002_v2/{decoder}_{realization}{suffix}.jsonl"
+                raw_path = root / f"runs/{model}_decoder_control_20261002_v2/{decoder}_{realization}{suffix}.jsonl"
                 manifest_path = raw_path.with_suffix(".jsonl.manifest.json")
                 manifest = json.loads(manifest_path.read_text())
                 hashes[str(manifest_path.relative_to(root))] = sha256(manifest_path.read_bytes()).hexdigest()
