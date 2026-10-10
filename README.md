@@ -1,5 +1,7 @@
 # When Web Evidence Repeats
 
+This is the code for paper: *When Web Evidence Repeats: Decision Stability in Claim Verification*
+
 Python 3.11 and a CUDA GPU are required for model inference.
 Install `requirements.txt` in Conda or a `venv --copies` environment.
 
